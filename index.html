@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Storage Pro - Versão Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuração para o Tailwind aceitar o modo escuro via classe 'dark'
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        .user-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .user-card:hover { transform: translateY(-4px); }
+        .favorite-star.active { color: #fbbf24; fill: #fbbf24; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Barra Superior com Botão de Tema -->
+        <div class="flex justify-end mb-6">
+            <button id="theme-toggle" class="p-3 rounded-2xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 hover:scale-110 transition-all">
+                <span id="theme-icon" class="text-xl">🌙</span>
+            </button>
+        </div>
+
+        <!-- Cabeçalho e Busca -->
+        <header class="mb-12 text-center">
+            <h1 class="text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                Dev <span class="text-indigo-600">Storage</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-lg mb-8">Gerenciamento de desenvolvedores com persistência total.</p>
+            
+            <div class="relative max-w-xl mx-auto">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Pesquisar por nome ou empresa..." 
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 shadow-lg text-slate-700 dark:text-slate-200 outline-none transition-all"
+                >
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">🔍</div>
+            </div>
+        </header>
+
+        <!-- Container da Lista -->
+        <div id="lista-usuarios" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Os cards serão injetados aqui pelo JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // --- ESTADO DA APLICAÇÃO ---
+        let todosOsUsuarios = [];
+        // Recupera favoritos do LocalStorage ou inicia vazio
+        let favoritos = JSON.parse(localStorage.getItem('dev_favorites')) || [];
+        
+        const inputBusca = document.querySelector('#search-input');
+        const container = document.querySelector('#lista-usuarios');
+        const themeToggle = document.querySelector('#theme-toggle');
+        const themeIcon = document.querySelector('#theme-icon');
+
+        // --- 1. LÓGICA DE TEMA (DARK MODE) ---
+        function inicializarTema() {
+            const temaSalvo = localStorage.getItem('theme');
+            if (temaSalvo === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeIcon.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // --- 2. LÓGICA DE FAVORITOS ---
+        function alternarFavorito(id) {
+            if (favoritos.includes(id)) {
+                favoritos = favoritos.filter(favId => favId !== id);
+            } else {
+                favoritos.push(id);
+            }
+            // Salva na "gaveta" (LocalStorage)
+            localStorage.setItem('dev_favorites', JSON.stringify(favoritos));
+            executarFiltro(); // Atualiza a tela
+        }
+
+        // --- 3. RENDERIZAÇÃO (O "MAP") ---
+        function renderizar(lista) {
+            if (lista.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center py-20 text-slate-400">Nenhum desenvolvedor encontrado...</p>`;
+                return;
+            }
+
+            container.innerHTML = lista.map(({ id, name, company, email, website }) => {
+                const isFavorito = favoritos.includes(id);
+                
+                return `
+                <div class="user-card bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative">
+                    <!-- Botão de Favorito -->
+                    <button onclick="alternarFavorito(${id})" class="absolute top-4 right-4 text-2xl focus:outline-none hover:scale-125 transition-transform">
+                        <span class="favorite-star ${isFavorito ? 'active text-yellow-400' : 'text-slate-200 dark:text-slate-700'}">★</span>
+                    </button>
+                    
+                    <div>
+                        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center font-bold mb-4">
+                            ${name.charAt(0)}
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 leading-tight pr-8">${name}</h3>
+                        <p class="text-indigo-500 font-semibold text-xs mb-4 uppercase tracking-widest">${company.name}</p>
+                        
+                        <div class="space-y-2 text-slate-500 dark:text-slate-400 text-sm">
+                            <p class="flex items-center gap-2"><span>📧</span> ${email}</p>
