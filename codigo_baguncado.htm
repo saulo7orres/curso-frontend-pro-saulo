@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Bagunçado v1.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 p-10 font-sans">
+
+    <h1 class="text-2xl font-bold mb-8 text-center text-slate-800">Cadastro de Loja (Repetitivo)</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- SEÇÃO PRODUTOS -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="font-bold mb-4">Produtos</h2>
+            <input type="text" id="input-produto" class="border p-2 w-full mb-2" placeholder="Nome do produto">
+            <button id="btn-produto" class="bg-blue-500 text-white p-2 w-full rounded">Adicionar Produto</button>
+            <ul id="lista-produtos" class="mt-4 text-sm text-slate-600"></ul>
+        </div>
+
+        <!-- SEÇÃO CLIENTES -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="font-bold mb-4">Clientes</h2>
+            <input type="text" id="input-cliente" class="border p-2 w-full mb-2" placeholder="Nome do cliente">
+            <button id="btn-cliente" class="bg-green-500 text-white p-2 w-full rounded">Adicionar Cliente</button>
+            <ul id="lista-clientes" class="mt-4 text-sm text-slate-600"></ul>
+        </div>
+
+        <!-- SEÇÃO FORNECEDORES -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="font-bold mb-4">Fornecedores</h2>
+            <input type="text" id="input-fornecedor" class="border p-2 w-full mb-2" placeholder="Nome do fornecedor">
+            <button id="btn-fornecedor" class="bg-purple-500 text-white p-2 w-full rounded">Adicionar Fornecedor</button>
+            <ul id="lista-fornecedores" class="mt-4 text-sm text-slate-600"></ul>
+        </div>
+    </div>
+
+    <script>
+        const produtos = [];
+        const clientes = [];
+        const fornecedores = [];
+
+        // REPETIÇÃO 1: PRODUTOS
+        document.querySelector('#btn-produto').addEventListener('click', () => {
+            const valor = document.querySelector('#input-produto').value;
+            if (valor !== "" && valor.length > 3) {
+                produtos.push(valor);
+                document.querySelector('#lista-produtos').innerHTML += `<li>${valor}</li>`;
+                document.querySelector('#input-produto').value = "";
+            } else {
+                alert("Nome inválido!");
+            }
+        });
+
+        // REPETIÇÃO 2: CLIENTES
+        document.querySelector('#btn-cliente').addEventListener('click', () => {
+            const valor = document.querySelector('#input-cliente').value;
+            if (valor !== "" && valor.length > 3) {
+                clientes.push(valor);
+                document.querySelector('#lista-clientes').innerHTML += `<li>${valor}</li>`;
+                document.querySelector('#input-cliente').value = "";
+            } else {
+                alert("Nome inválido!");
+            }
+        });
+
+        // REPETIÇÃO 3: FORNECEDORES
+        document.querySelector('#btn-fornecedor').addEventListener('click', () => {
+            const valor = document.querySelector('#input-fornecedor').value;
+            if (valor !== "" && valor.length > 3) {
+                fornecedores.push(valor);
+                document.querySelector('#lista-fornecedores').innerHTML += `<li>${valor}</li>`;
+                document.querySelector('#input-fornecedor').value = "";
+            } else {
+                alert("Nome inválido!");
+            }
+        });
+    </script>
+</body>
+</html>
