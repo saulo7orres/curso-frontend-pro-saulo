@@ -2,15 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema Bagunçado v1.0</title>
+    <title>Sistema Bagunçado v1.0 — Refatorado</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 p-10 font-sans">
 
-    <h1 class="text-2xl font-bold mb-8 text-center text-slate-800">Cadastro de Loja (Repetitivo)</h1>
+    <h1 class="text-2xl font-bold mb-8 text-center text-slate-800">Cadastro de Loja (Refatorado)</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- SEÇÃO PRODUTOS -->
+
         <div class="bg-white p-6 rounded-xl shadow">
             <h2 class="font-bold mb-4">Produtos</h2>
             <input type="text" id="input-produto" class="border p-2 w-full mb-2" placeholder="Nome do produto">
@@ -18,7 +18,6 @@
             <ul id="lista-produtos" class="mt-4 text-sm text-slate-600"></ul>
         </div>
 
-        <!-- SEÇÃO CLIENTES -->
         <div class="bg-white p-6 rounded-xl shadow">
             <h2 class="font-bold mb-4">Clientes</h2>
             <input type="text" id="input-cliente" class="border p-2 w-full mb-2" placeholder="Nome do cliente">
@@ -26,7 +25,6 @@
             <ul id="lista-clientes" class="mt-4 text-sm text-slate-600"></ul>
         </div>
 
-        <!-- SEÇÃO FORNECEDORES -->
         <div class="bg-white p-6 rounded-xl shadow">
             <h2 class="font-bold mb-4">Fornecedores</h2>
             <input type="text" id="input-fornecedor" class="border p-2 w-full mb-2" placeholder="Nome do fornecedor">
@@ -40,40 +38,41 @@
         const clientes = [];
         const fornecedores = [];
 
-        // REPETIÇÃO 1: PRODUTOS
-        document.querySelector('#btn-produto').addEventListener('click', () => {
-            const valor = document.querySelector('#input-produto').value;
-            if (valor !== "" && valor.length > 3) {
-                produtos.push(valor);
-                document.querySelector('#lista-produtos').innerHTML += `<li>${valor}</li>`;
-                document.querySelector('#input-produto').value = "";
-            } else {
-                alert("Nome inválido!");
-            }
-        });
+        const MIN_LENGTH = 5;
 
-        // REPETIÇÃO 2: CLIENTES
-        document.querySelector('#btn-cliente').addEventListener('click', () => {
-            const valor = document.querySelector('#input-cliente').value;
-            if (valor !== "" && valor.length > 3) {
-                clientes.push(valor);
-                document.querySelector('#lista-clientes').innerHTML += `<li>${valor}</li>`;
-                document.querySelector('#input-cliente').value = "";
-            } else {
-                alert("Nome inválido!");
-            }
-        });
+        function adicionarItem(idInput, idLista, arrayDados) {
+            const inputEl = document.getElementById(idInput);
+            const listaEl = document.getElementById(idLista);
+            const valor = inputEl.value.trim();
 
-        // REPETIÇÃO 3: FORNECEDORES
-        document.querySelector('#btn-fornecedor').addEventListener('click', () => {
-            const valor = document.querySelector('#input-fornecedor').value;
-            if (valor !== "" && valor.length > 3) {
-                fornecedores.push(valor);
-                document.querySelector('#lista-fornecedores').innerHTML += `<li>${valor}</li>`;
-                document.querySelector('#input-fornecedor').value = "";
+            if (valor !== "" && valor.length >= MIN_LENGTH) {
+                arrayDados.push(valor);
+                const li = document.createElement('li');
+                li.textContent = valor;
+                listaEl.appendChild(li);
+                inputEl.value = "";
+                inputEl.focus();
             } else {
-                alert("Nome inválido!");
+                alert(`Nome inválido! deve ter pelo menos ${MIN_LENGTH} caracteres.`);
             }
+        }
+
+        document.getElementById('btn-produto').addEventListener('click', () => adicionarItem('input-produto', 'lista-produtos', produtos));
+        document.getElementById('btn-cliente').addEventListener('click', () => adicionarItem('input-cliente', 'lista-clientes', clientes));
+        document.getElementById('btn-fornecedor').addEventListener('click', () => adicionarItem('input-fornecedor', 'lista-fornecedores', fornecedores));
+
+        ['input-produto','input-cliente','input-fornecedor'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const mapping = {
+                        'input-produto': ['lista-produtos', produtos],
+                        'input-cliente': ['lista-clientes', clientes],
+                        'input-fornecedor': ['lista-fornecedores', fornecedores]
+                    };
+                    const [idLista, arr] = mapping[id];
+                    adicionarItem(id, idLista, arr);
+                }
+            });
         });
     </script>
 </body>
