@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Alpha - Sistema de Gestão</title>
+    <!-- Tailwind CSS para o layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-50 p-6 md:p-12 font-sans text-zinc-800">
+
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-black text-emerald-600 tracking-tight">Academia <span class="text-zinc-400 font-light">Alpha</span></h1>
+        <p class="text-zinc-500 mt-2 italic text-sm">Atenção: Este código contém muitas repetições e lógica manual. Seu desafio é refatorá-lo!</p>
+    </header>
+
+    <!-- SEÇÃO DE RESUMO (NOVO) -->
+    <div class="max-w-6xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-emerald-500 text-white p-6 rounded-3xl shadow-lg">
+            <h3 class="font-bold uppercase text-xs tracking-widest opacity-80">Total de Registros</h3>
+            <p class="text-4xl font-black mt-2">Total: <span id="total-geral">0</span></p>
+        </div>
+        <div class="bg-zinc-800 text-white p-6 rounded-3xl shadow-lg">
+            <h3 class="font-bold uppercase text-xs tracking-widest opacity-80 text-emerald-400">Aluno no Centro da Lista</h3>
+            <p class="text-2xl font-bold mt-2" id="aluno-meio">Ninguém ainda...</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        
+        <!-- SEÇÃO ALUNOS -->
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-zinc-200">
+            <h2 class="font-bold text-xl mb-6 text-emerald-600">👤 Alunos</h2>
+            <input type="text" id="input-aluno" class="border border-zinc-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Nome do aluno">
+            <button id="btn-aluno" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 w-full rounded-2xl transition-all">Matricular</button>
+            <p class="mt-4 text-xs font-bold text-zinc-400 uppercase">Total Alunos: <span id="contagem-alunos">0</span></p>
+            <ul id="lista-alunos" class="mt-4 space-y-3 text-sm text-zinc-500"></ul>
+        </div>
+
+        <!-- SEÇÃO INSTRUTORES -->
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-zinc-200">
+            <h2 class="font-bold text-xl mb-6 text-orange-600">💪 Instrutores</h2>
+            <input type="text" id="input-instrutor" class="border border-zinc-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-orange-400" placeholder="Nome do instrutor">
+            <button id="btn-instrutor" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 w-full rounded-2xl transition-all">Contratar</button>
+            <p class="mt-4 text-xs font-bold text-zinc-400 uppercase">Total Instrutores: <span id="contagem-instrutores">0</span></p>
+            <ul id="lista-instrutores" class="mt-4 space-y-3 text-sm text-zinc-500"></ul>
+        </div>
+
+        <!-- SEÇÃO EQUIPAMENTOS -->
+        <div class="bg-white p-8 rounded-3xl shadow-md border border-zinc-200">
+            <h2 class="font-bold text-xl mb-6 text-blue-600">🏋️ Equipamentos</h2>
+            <input type="text" id="input-equipamento" class="border border-zinc-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-blue-400" placeholder="Nome do aparelho">
+            <button id="btn-equipamento" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 w-full rounded-2xl transition-all">Cadastrar</button>
+            <p class="mt-4 text-xs font-bold text-zinc-400 uppercase">Total Equipamentos: <span id="contagem-equipamentos">0</span></p>
+            <ul id="lista-equipamentos" class="mt-4 space-y-3 text-sm text-zinc-500"></ul>
+        </div>
+
+    </div>
+
+    <script>
+        const alunos = [];
+        const instrutores = [];
+        const equipamentos = [];
+
+        // REPETIÇÃO 1: ALUNOS
+        document.querySelector('#btn-aluno').addEventListener('click', () => {
+            const valor = document.querySelector('#input-aluno').value.trim();
+            if (valor !== "" && valor.length >= 3) {
+                alunos.push(valor);
+                document.querySelector('#lista-alunos').innerHTML += `<li class="p-3 bg-zinc-100 rounded-xl">🔹 ${valor}</li>`;
+                document.querySelector('#input-aluno').value = "";
+                
+                // LÓGICA REPETIDA E MANUAL
+                document.querySelector('#contagem-alunos').textContent = alunos.length;
+                document.querySelector('#total-geral').textContent = alunos.length + instrutores.length + equipamentos.length;
+                
+                // Pegando informação do meio do Array
+                const posicaoMeio = Math.floor(alunos.length / 2);
+                document.querySelector('#aluno-meio').textContent = alunos[posicaoMeio];
+
+            } else {
+                alert("Erro: Nome do aluno muito curto!");
+            }
+        });
+
+        // REPETIÇÃO 2: INSTRUTORES
+        document.querySelector('#btn-instrutor').addEventListener('click', () => {
+            const valor = document.querySelector('#input-instrutor').value.trim();
+            if (valor !== "" && valor.length >= 3) {
+                instrutores.push(valor);
+                document.querySelector('#lista-instrutores').innerHTML += `<li class="p-3 bg-zinc-100 rounded-xl">🔸 ${valor}</li>`;
+                document.querySelector('#input-instrutor').value = "";
+                
+                // LÓGICA REPETIDA E MANUAL
+                document.querySelector('#contagem-instrutores').textContent = instrutores.length;
+                document.querySelector('#total-geral').textContent = alunos.length + instrutores.length + equipamentos.length;
+
+            } else {
+                alert("Erro: Nome do instrutor muito curto!");
+            }
+        });
+
+        // REPETIÇÃO 3: EQUIPAMENTOS
+        document.querySelector('#btn-equipamento').addEventListener('click', () => {
+            const valor = document.querySelector('#input-equipamento').value.trim();
+            if (valor !== "" && valor.length >= 3) {
+                equipamentos.push(valor);
+                document.querySelector('#lista-equipamentos').innerHTML += `<li class="p-3 bg-zinc-100 rounded-xl">⚙️ ${valor}</li>`;
+                document.querySelector('#input-equipamento').value = "";
+                
+                // LÓGICA REPETIDA E MANUAL
+                document.querySelector('#contagem-equipamentos').textContent = equipamentos.length;
+                document.querySelector('#total-geral').textContent = alunos.length + instrutores.length + equipamentos.length;
+
+            } else {
+                alert("Erro: Nome do equipamento muito curto!");
+            }
+        });
+
+    </script>
+</body>
+</html>
