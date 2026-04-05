@@ -1,0 +1,110 @@
+<!--Curso: Análise e Desenvolvimento de Sistemas
+    Aluno: Saulo Torres de Oliveira Assis
+    Professora: Tarciana Maria de Sena Katter-->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Refatorado - DevStore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-item { animation: slideIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 p-6 md:p-12 font-sans text-slate-800">
+
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-black text-indigo-600">DevStore <span class="text-slate-400 font-light">Manager</span></h1>
+        <p class="text-slate-500 mt-2">Código Refatorado Por Saulo Torres</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        
+        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
+            <h2 class="font-bold text-xl mb-6 text-blue-600">📦 Produtos</h2>
+            <input type="text" id="input-produto" class="border border-slate-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-blue-400 transition-all" placeholder="Nome do produto">
+            <button id="btn-produto" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 w-full rounded-2xl transition-all shadow-lg shadow-blue-100">Adicionar</button>
+            <ul id="lista-produtos" class="mt-8 space-y-3"></ul>
+        </div>
+
+        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
+            <h2 class="font-bold text-xl mb-6 text-green-600">👥 Clientes</h2>
+            <input type="text" id="input-cliente" class="border border-slate-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-green-400 transition-all" placeholder="Nome do cliente">
+            <button id="btn-cliente" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 w-full rounded-2xl transition-all shadow-lg shadow-green-100">Adicionar</button>
+            <ul id="lista-clientes" class="mt-8 space-y-3"></ul>
+        </div>
+
+        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
+            <h2 class="font-bold text-xl mb-6 text-purple-600">🚛 Fornecedores</h2>
+            <input type="text" id="input-fornecedor" class="border border-slate-200 p-4 rounded-2xl w-full mb-4 outline-none focus:ring-2 focus:ring-purple-400 transition-all" placeholder="Nome do fornecedor">
+            <button id="btn-fornecedor" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 w-full rounded-2xl transition-all shadow-lg shadow-purple-100">Adicionar</button>
+            <ul id="lista-fornecedores" class="mt-8 space-y-3"></ul>
+        </div>
+
+    </div>
+
+    <script>
+        const db = {
+            produtos: [],
+            clientes: [],
+            fornecedores: []
+        };
+
+        function adicionarItem(idInput, idLista, arrayDados) {
+            const input = document.querySelector(idInput);
+            const lista = document.querySelector(idLista);
+            const valor = input.value.trim();
+
+            const MIN_CARACTERES = 3;
+
+            if (valor !== "" && valor.length >= MIN_CARACTERES) {
+                arrayDados.push(valor);
+
+                const novoItem = `
+                    <li class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center animate-item">
+                        <span class="font-medium text-slate-700">${valor}</span>
+                        <span class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-1 rounded-md uppercase font-bold">Item Salvo</span>
+                    </li>
+                `;
+                lista.innerHTML += novoItem;
+
+                input.value = "";
+                input.focus();
+                
+            } else {
+                alert(`Erro: O nome precisa ter pelo menos ${MIN_CARACTERES} caracteres.`);
+            }
+        }
+
+        document.querySelector('#btn-produto').addEventListener('click', () => {
+            adicionarItem('#input-produto', '#lista-produtos', db.produtos);
+        });
+
+        document.querySelector('#btn-cliente').addEventListener('click', () => {
+            adicionarItem('#input-cliente', '#lista-clientes', db.clientes);
+        });
+
+        document.querySelector('#btn-fornecedor').addEventListener('click', () => {
+            adicionarItem('#input-fornecedor', '#lista-fornecedores', db.fornecedores);
+        });
+
+        const configKeys = [
+            { input: '#input-produto', btn: '#btn-produto' },
+            { input: '#input-cliente', btn: '#btn-cliente' },
+            { input: '#input-fornecedor', btn: '#btn-fornecedor' }
+        ];
+
+        configKeys.forEach(config => {
+            document.querySelector(config.input).addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.querySelector(config.btn).click();
+            });
+        });
+    </script>
+</body>
+</html>
